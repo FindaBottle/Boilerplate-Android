@@ -1,0 +1,129 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+
+
+android {
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        //TODO 修改为项目名称
+        applicationId rootProject.ext.baseApplicationId+".boilerplate"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+    }
+    signingConfigs {
+        debug {
+            storeFile file('../buildsystem/debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        release {
+            def signingFile = file('../signing.properties')
+            if (signingFile.canRead()) {
+                def Properties props = new Properties()
+                props.load(new FileInputStream(signingFile))
+
+                try {
+                    storeFile = file(props['STORE_FILE'])
+                    storePassword = props['STORE_PASSWORD']
+                    keyAlias = props['KEY_ALIAS']
+                    keyPassword = props['KEY_PASSWORD']
+
+                    println "RELEASE_BUILD: Signing..."
+                } catch (e) {
+                    throw new InvalidUserDataException("You should define STORE_FILE and STORE_PASSWORD and KEY_ALIAS and KEY_PASSWORD in signing.properties.")
+                }
+            } else {
+                println "RELEASE_BUILD: signing.properties not found"
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        //如需使用第三方sdk与签名绑定，为方便调试则不再用debugkey作为调试的key
+        debug {
+            //   applicationIdSuffix ".debug"
+            shrinkResources true
+            signingConfig signingConfigs.release
+        }
+    }
+
+    //修改生成的apk名字
+    applicationVariants.all { variant ->
+
+        if (variant.buildType.name.equals('release')) {
+            variant.outputs.each { output ->
+                def appName = 'ReservationApp'
+                def oldFile = output.outputFile
+                def buildName = ''
+                def releaseTime = new Date().format("yyyyMMdd", TimeZone.getTimeZone("UTC"))
+
+                variant.productFlavors.each { product ->
+                    buildName = product.name
+                }
+
+                def releaseApkName = appName + '-v' + defaultConfig.versionName + "-" + releaseTime + "-" + variant.buildType.name + '.apk'
+                output.outputFile = new File(oldFile.parent, releaseApkName)
+            }
+        }
+    }
+
+    // 解决butterknife和lombok的冲突：Duplicate files copied in APK META-INF/services/javax.annotation.processing.Processor
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //test
+    testCompile rootProject.ext.libJunitTest
+
+    //base support
+    compile rootProject.ext.libSupportAppcompat
+    compile rootProject.ext.libSupportDesign
+    compile rootProject.ext.libSupportRecyclerview
+    compile rootProject.ext.libSupportV4
+
+    //network
+    compile rootProject.ext.libRetrofit
+    compile rootProject.ext.libRetrofitConverterGson
+    compile rootProject.ext.libRetrofitAdapterRxJava
+    compile rootProject.ext.libOkHttpLoggingInterceptor
+
+    // inspection
+    compile rootProject.ext.libStetho
+    compile rootProject.ext.libStethoOkhttp
+
+    //dbflow
+    apt     rootProject.ext.libDbFlowApt
+    compile rootProject.ext.libDbFlowCore
+    compile rootProject.ext.libDbFlow
+    compile rootProject.ext.libDbFlowCipher
+
+    //logger
+    compile rootProject.ext.libLogger
+
+    //injection
+    compile rootProject.ext.libButterKnife
+}

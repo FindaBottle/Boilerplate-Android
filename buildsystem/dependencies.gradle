@@ -1,0 +1,56 @@
+def retrofitVersion = "2.0.2"
+def okHttpVersion = '3.2.0'
+def supportVersion = '23.4.0'
+def stethoVersion = '1.3.0'
+def loggerVersion = '1.12'
+def dbFlowVersion = "3.0.1"
+def butterKnifeVersion = "7.0.1"
+
+def junitVersion = "4.12"
+
+
+project.ext {
+    baseApplicationId = "com.yninfo"
+    buildToolsVersion = "24"
+    compileSdkVersion = 23
+    minSdkVersion = 14
+    targetSdkVersion = 23
+
+    libJunitTest = "junit:junit:${junitVersion}"
+
+    libSupportAppcompat = "com.android.support:appcompat-v7:${supportVersion}"
+    libSupportDesign = "com.android.support:design:${supportVersion}"
+    libSupportRecyclerview = "com.android.support:recyclerview-v7:${supportVersion}"
+    libSupportCardView = "com.android.support:cardview-v7:$supportVersion"
+    libSupportV4 = "com.android.support:support-v4:${supportVersion}"
+    libSupportAnnotations = "com.android.support:support-annotations:$supportVersion"
+
+
+    libRetrofit = "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    libRetrofitConverterGson = "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
+    libRetrofitAdapterRxJava = "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}"
+    libOkHttpLoggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}"
+
+    //intercpt
+    libStetho = "com.facebook.stetho:stetho:${stethoVersion}"
+    libStethoOkhttp = "com.facebook.stetho:stetho-okhttp3:${stethoVersion}"
+
+    //log
+    libLogger = "com.github.orhanobut:logger:${loggerVersion}"
+
+    libRxAndroid = "io.reactivex:rxandroid:1.1.0"
+    libRxJava = "io.reactivex:rxjava:1.1.1"
+
+    //dbflow
+    libDbFlowApt = "com.github.Raizlabs.DBFlow:dbflow-processor:${dbFlowVersion}"
+    libDbFlowCore = "com.github.Raizlabs.DBFlow:dbflow-core:${dbFlowVersion}"
+    libDbFlow = "com.github.Raizlabs.DBFlow:dbflow:${dbFlowVersion}"
+    libDbFlowCipher = "com.github.Raizlabs.DBFlow:dbflow-sqlcipher:${dbFlowVersion}"
+
+    //ui
+
+    //injection
+    libButterKnife = "com.jakewharton:butterknife:${butterKnifeVersion}"
+
+
+}
