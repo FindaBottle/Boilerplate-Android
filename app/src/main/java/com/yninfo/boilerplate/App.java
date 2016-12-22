@@ -11,6 +11,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Logger.init("").hideThreadInfo().methodCount(3);
+        Logger.init("ajskldjf").hideThreadInfo().methodCount(3);
     }
 }
